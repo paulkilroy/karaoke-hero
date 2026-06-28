@@ -155,6 +155,57 @@ body {
   font-size: 0.9rem;
 }
 
+/* ---- song highway ---- */
+.song {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.song__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 700;
+}
+.song__stage {
+  position: relative;
+  width: 100%;
+}
+.song__canvas {
+  width: 100%;
+  height: 340px;
+  display: block;
+  background: linear-gradient(180deg, #15192e, #0c1020);
+  border: 1px solid var(--panel-2);
+  border-radius: 16px;
+}
+.song__count {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+}
+.song-stars {
+  font-size: 2.4rem;
+  color: #f59e0b;
+  letter-spacing: 4px;
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
 /* ---- range test: note-cleared hand-off ---- */
 .cleared-banner {
   display: flex;

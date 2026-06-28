@@ -1,12 +1,19 @@
 // Mode picker.
 
-export type Mode = "practice" | "range" | "progress" | "versus";
+export type Mode = "practice" | "songs" | "range" | "progress" | "versus";
 
 export function Home({ onPick }: { onPick: (mode: Mode) => void }) {
   return (
     <div className="home">
       <p className="home__lead">Pick a mode</p>
       <div className="modes modes--grid">
+        <button className="mode-card" onClick={() => onPick("songs")}>
+          <div className="mode-card__icon">🎵</div>
+          <div className="mode-card__title">Songs</div>
+          <div className="mode-card__desc">
+            Sing along, Guitar-Hero style. Scored with stars.
+          </div>
+        </button>
         <button className="mode-card" onClick={() => onPick("practice")}>
           <div className="mode-card__icon">🎯</div>
           <div className="mode-card__title">Practice</div>

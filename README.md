@@ -88,9 +88,9 @@ band, a ring of progress to the next, a skill radar, and range/accuracy trends.
 
 1. **Pitch Match + local & online Sing-Off** ✅
 2. **Range test + extension drills + progress charts + proficiency level** ✅
-   ← *you are here*
-3. **Song mode (MIDI)** — scrolling note highway, sing-along scoring, stars &
-   streaks. MIDI gives melody + harmony + backing without audio analysis.
-4. **Harmony mode** — sing a harmony line against the melody (MIDI multi-track)
-5. **Import your own MP3** — offline preprocess (Demucs source-separation →
+3. **Song mode** ✅ — Guitar-Hero scrolling pitch highway, sing-along scoring,
+   stars. Starts with built-in melodies (Amazing Grace). ← *you are here*
+4. **More songs + MIDI import** — load `.mid` files for melody/harmony/backing
+5. **Harmony mode** — sing a harmony line against the melody (multi-track)
+6. **Import your own MP3** — offline preprocess (Demucs source-separation →
    `basic-pitch` melody extraction → `.lrc` lyrics) feeding song mode.

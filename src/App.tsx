@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Home, type Mode } from "./ui/Home";
 import { PitchMatchGame } from "./ui/PitchMatchGame";
+import { SongMode } from "./ui/SongMode";
 import { RangeHome } from "./ui/RangeHome";
 import { ProgressScreen } from "./ui/ProgressScreen";
 import { VersusGame } from "./ui/VersusGame";
@@ -10,6 +11,7 @@ type Screen = "home" | Mode;
 const TAGS: Record<Screen, string> = {
   home: "Karaoke Hero",
   practice: "Practice",
+  songs: "Songs",
   range: "Range & Warm-ups",
   progress: "Progress",
   versus: "Sing-Off",
@@ -35,6 +37,7 @@ export default function App() {
       <main className="app__main">
         {screen === "home" && <Home onPick={setScreen} />}
         {screen === "practice" && <PitchMatchGame />}
+        {screen === "songs" && <SongMode onExit={() => setScreen("home")} />}
         {screen === "range" && <RangeHome onExit={() => setScreen("home")} />}
         {screen === "progress" && (
           <ProgressScreen onExit={() => setScreen("home")} />
