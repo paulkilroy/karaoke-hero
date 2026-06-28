@@ -26,6 +26,7 @@ export function RangeTest({ onExit }: { onExit: () => void }) {
           limit.
         </p>
         <p className="hint">First we go down to your lowest, then up to your top.</p>
+        <p className="hint">🎧 Headphones recommended — otherwise the mic hears the played note.</p>
         <button className="btn btn--primary" onClick={() => setStarted(true)}>
           🎤 Start test
         </button>
@@ -114,7 +115,11 @@ function RunningTest({ onExit }: { onExit: () => void }) {
               style={{ width: `${Math.round(t.holdProgress * 100)}%` }}
             />
             <span className="hold__text">
-              {t.holdProgress > 0 ? "hold…" : "match the note"}
+              {t.gated
+                ? "🔊 listen…"
+                : t.holdProgress > 0
+                  ? "hold…"
+                  : "🎤 now sing it"}
             </span>
           </div>
         </>

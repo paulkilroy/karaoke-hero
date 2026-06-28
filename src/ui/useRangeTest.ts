@@ -31,6 +31,7 @@ export function useRangeTest() {
   const [target, setTarget] = useState<number | null>(START);
   const [frozen, setFrozen] = useState(false);
   const [cleared, setCleared] = useState<number | null>(null); // note just cleared
+  const [gated, setGated] = useState(false); // reference tone sounding → "listen"
   const [low, setLow] = useState<number | null>(null);
   const [high, setHigh] = useState<number | null>(null);
 
@@ -44,7 +45,11 @@ export function useRangeTest() {
   const t0 = useRef<number>(now());
 
   useEffect(() => {
-    if (target != null) playTone(midiToHz(target), 800);
+    if (target == null) return;
+    playTone(midiToHz(target), 800);
+    setGated(true);
+    const id = setTimeout(() => setGated(false), 980);
+    return () => clearTimeout(id);
   }, [target]);
 
   const advance = useCallback((next: number) => {
@@ -119,7 +124,10 @@ export function useRangeTest() {
   }, [finishDown, finishUp]);
 
   const replayTone = useCallback(() => {
-    if (target != null) playTone(midiToHz(target), 800);
+    if (target == null) return;
+    playTone(midiToHz(target), 800);
+    setGated(true);
+    setTimeout(() => setGated(false), 980);
   }, [target]);
 
   /** Download the full session (target vs detected, per frame) as JSON. */
@@ -180,6 +188,7 @@ export function useRangeTest() {
     high,
     error,
     listening,
+    gated,
     cantReach,
     replayTone,
     downloadAnalysis,

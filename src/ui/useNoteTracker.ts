@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { centsFromTarget } from "../engine/music";
 import { isOnTarget, scoreHold } from "../engine/scoring";
+import { toneGuardActive } from "../audio/tone";
 import { usePitch } from "./usePitch";
 
 /** Time (ms) the singer must stay on the note to clear it. */
@@ -78,6 +79,15 @@ export function useNoteTracker({
 
     const now =
       typeof performance !== "undefined" ? performance.now() : Date.now();
+
+    // Ignore input while the reference tone is sounding — the mic may be
+    // hearing the speaker, not the singer. Keep the clock fresh so the first
+    // real frame afterwards doesn't carry a huge dt.
+    if (toneGuardActive()) {
+      lastTs.current = now;
+      return;
+    }
+
     const dt = lastTs.current == null ? 0 : now - lastTs.current;
     lastTs.current = now;
 

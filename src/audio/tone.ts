@@ -8,10 +8,31 @@ function getCtx(): AudioContext {
   return ctx;
 }
 
+function nowMs(): number {
+  return typeof performance !== "undefined" ? performance.now() : Date.now();
+}
+
+// Without echo-cancellation (which would warp pitch) the mic can hear the
+// reference tone from the speakers. We mark a guard window while any tone is
+// sounding (+ a short tail for room/speaker decay) so pitch tracking can ignore
+// input that's really the speaker, not the singer.
+let guardUntil = 0;
+const GUARD_TAIL_MS = 180;
+
+function extendGuard(durationMs: number): void {
+  guardUntil = Math.max(guardUntil, nowMs() + durationMs + GUARD_TAIL_MS);
+}
+
+/** True while a reference tone is (or was just) sounding. */
+export function toneGuardActive(): boolean {
+  return nowMs() < guardUntil;
+}
+
 /** Play a short, gently-enveloped sine at `hz` for `durationMs`. */
 export function playTone(hz: number, durationMs = 1000): void {
   const audio = getCtx();
   void audio.resume();
+  extendGuard(durationMs);
 
   const now = audio.currentTime;
   const end = now + durationMs / 1000;
