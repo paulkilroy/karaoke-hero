@@ -13,6 +13,15 @@ export const HOLD_TARGET_MS = 1100;
 /** Celebration beat (ms) callers should pause after a clear before advancing. */
 export const CLEAR_PAUSE_MS = 900;
 
+/** One processed frame of detection, for diagnostics/recording. */
+export interface NoteFrame {
+  target: number;
+  hz: number | null;
+  clarity: number | null;
+  cents: number | null;
+  onTarget: boolean;
+}
+
 export interface NoteTrackerArgs {
   /** Target MIDI note, or null when there's nothing to sing. */
   target: number | null;
@@ -21,6 +30,8 @@ export interface NoteTrackerArgs {
   /** When true, freeze processing (e.g. during a celebration beat). */
   frozen: boolean;
   onCleared: (score: number) => void;
+  /** Optional per-frame hook for diagnostics/recording. */
+  onFrame?: (frame: NoteFrame) => void;
 }
 
 export interface NoteTrackerState {
@@ -35,6 +46,7 @@ export function useNoteTracker({
   active,
   frozen,
   onCleared,
+  onFrame,
 }: NoteTrackerArgs): NoteTrackerState {
   const { pitch, error, listening } = usePitch(active, { clarityThreshold: 0.9 });
 
@@ -47,6 +59,8 @@ export function useNoteTracker({
   const clearedRef = useRef(false);
   const onClearedRef = useRef(onCleared);
   onClearedRef.current = onCleared;
+  const onFrameRef = useRef(onFrame);
+  onFrameRef.current = onFrame;
 
   // reset accumulators whenever the target changes
   useEffect(() => {
@@ -71,19 +85,34 @@ export function useNoteTracker({
       setCents(null);
       holdMs.current = Math.max(0, holdMs.current - dt);
       setHoldProgress(holdMs.current / HOLD_TARGET_MS);
+      onFrameRef.current?.({
+        target,
+        hz: null,
+        clarity: null,
+        cents: null,
+        onTarget: false,
+      });
       return;
     }
 
     const c = centsFromTarget(pitch.hz, target);
     setCents(c);
 
-    if (isOnTarget(pitch.hz, target)) {
+    const on = isOnTarget(pitch.hz, target);
+    if (on) {
       holdMs.current += dt;
       samples.current.push(c);
     } else {
       holdMs.current = Math.max(0, holdMs.current - dt * 0.7);
     }
     setHoldProgress(Math.min(1, holdMs.current / HOLD_TARGET_MS));
+    onFrameRef.current?.({
+      target,
+      hz: pitch.hz,
+      clarity: pitch.clarity,
+      cents: c,
+      onTarget: on,
+    });
 
     if (holdMs.current >= HOLD_TARGET_MS) {
       clearedRef.current = true;

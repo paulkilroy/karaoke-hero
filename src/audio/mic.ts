@@ -29,7 +29,7 @@ export async function startMic(
   opts: MicOptions = {},
 ): Promise<StopMic> {
   const clarityThreshold = opts.clarityThreshold ?? 0.9;
-  const minHz = opts.minHz ?? 70;
+  const minHz = opts.minHz ?? 50; // ~G1 — let low (bass) voices register
   const maxHz = opts.maxHz ?? 1100;
 
   const ctx = new AudioContext();
@@ -44,7 +44,8 @@ export async function startMic(
 
   const source = ctx.createMediaStreamSource(stream);
   const analyser = ctx.createAnalyser();
-  analyser.fftSize = 2048;
+  // 4096 samples gives enough periods to resolve low notes (~50–80 Hz) reliably.
+  analyser.fftSize = 4096;
   source.connect(analyser);
 
   const detector = PitchDetector.forFloat32Array(analyser.fftSize);

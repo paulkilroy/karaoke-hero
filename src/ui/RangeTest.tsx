@@ -1,5 +1,6 @@
-// Guided range-test screen. Descend to find the floor, ascend to find the
-// ceiling, then show a result card (range, span, voice-type hint, tessitura).
+// Guided range-test screen. Hands-free: match each note, and it steps further
+// out automatically with a clear "Got it!" beat between notes. Descend to the
+// floor, ascend to the ceiling, then show a result card.
 
 import { useState } from "react";
 import { midiToNoteName } from "../engine/music";
@@ -20,8 +21,9 @@ export function RangeTest({ onExit }: { onExit: () => void }) {
         <h2>🎚 Range Test</h2>
         <p>
           <strong>Warm up first</strong> (hum or lip-trill for a minute) — a cold
-          voice tests narrow. Then I’ll play a note; match it and hold it. I’ll
-          step further out each time until you tap <em>“can’t reach”</em>.
+          voice tests narrow. Then match each note I play and hold it; I’ll step
+          further out automatically. Tap <em>“can’t reach”</em> when you hit your
+          limit.
         </p>
         <p className="hint">First we go down to your lowest, then up to your top.</p>
         <button className="btn btn--primary" onClick={() => setStarted(true)}>
@@ -54,7 +56,13 @@ function RunningTest({ onExit }: { onExit: () => void }) {
   }
 
   if (t.phase === "done" && t.low != null && t.high != null) {
-    return <ResultCard range={{ low: t.low, high: t.high }} onExit={onExit} />;
+    return (
+      <ResultCard
+        range={{ low: t.low, high: t.high }}
+        onExit={onExit}
+        onDownload={t.downloadAnalysis}
+      />
+    );
   }
 
   const goingDown = t.phase === "down";
@@ -72,39 +80,55 @@ function RunningTest({ onExit }: { onExit: () => void }) {
         {goingDown ? "⬇ Find your lowest" : "⬆ Find your highest"}
       </div>
 
-      <div className="versus">
-        <div className="versus__side">
-          <div className="versus__label">Match</div>
-          <div className="versus__note versus__note--target">
-            {t.target != null ? midiToNoteName(t.target) : "…"}
+      {t.cleared != null ? (
+        <div className="cleared-banner">
+          <div className="cleared-banner__check">✓ Got it!</div>
+          <div className="cleared-banner__note">{midiToNoteName(t.cleared)}</div>
+          <div className="cleared-banner__next">
+            {goingDown ? "⬇ going lower…" : "⬆ going higher…"}
           </div>
         </div>
-        <div className="versus__arrow">→</div>
-        <div className="versus__side">
-          <div className="versus__label">You</div>
-          <div className="versus__note">{detected}</div>
-        </div>
-      </div>
+      ) : (
+        <>
+          <div className="versus">
+            <div className="versus__side">
+              <div className="versus__label">Match</div>
+              <div className="versus__note versus__note--target">
+                {t.target != null ? midiToNoteName(t.target) : "…"}
+              </div>
+            </div>
+            <div className="versus__arrow">→</div>
+            <div className="versus__side">
+              <div className="versus__label">You</div>
+              <div className="versus__note">{detected}</div>
+            </div>
+          </div>
 
-      {!t.listening && <div className="hint">starting mic…</div>}
+          {!t.listening && <div className="hint">starting mic…</div>}
 
-      <PitchMeter cents={t.cents} targetMidi={t.target} />
+          <PitchMeter cents={t.cents} targetMidi={t.target} />
 
-      <div className="hold">
-        <div
-          className="hold__bar"
-          style={{ width: `${Math.round(t.holdProgress * 100)}%` }}
-        />
-        <span className="hold__text">
-          {t.holdProgress > 0 ? "hold…" : "match the note"}
-        </span>
-      </div>
+          <div className="hold">
+            <div
+              className="hold__bar"
+              style={{ width: `${Math.round(t.holdProgress * 100)}%` }}
+            />
+            <span className="hold__text">
+              {t.holdProgress > 0 ? "hold…" : "match the note"}
+            </span>
+          </div>
+        </>
+      )}
 
       <div className="controls">
-        <button className="btn" onClick={t.replayTone}>
+        <button className="btn" onClick={t.replayTone} disabled={t.cleared != null}>
           🔁 Replay note
         </button>
-        <button className="btn btn--primary" onClick={t.cantReach}>
+        <button
+          className="btn btn--primary"
+          onClick={t.cantReach}
+          disabled={t.cleared != null}
+        >
           {goingDown ? "⬇ Can’t go lower" : "⬆ Can’t go higher"}
         </button>
       </div>
@@ -115,9 +139,11 @@ function RunningTest({ onExit }: { onExit: () => void }) {
 function ResultCard({
   range,
   onExit,
+  onDownload,
 }: {
   range: VocalRange;
   onExit: () => void;
+  onDownload: () => void;
 }) {
   const voice = classifyVoice(range);
   const tess = tessitura(range);
@@ -146,6 +172,9 @@ function ResultCard({
       <div className="controls">
         <button className="btn btn--primary" onClick={onExit}>
           Done
+        </button>
+        <button className="btn" onClick={onDownload}>
+          🐛 Save analysis
         </button>
       </div>
     </div>
