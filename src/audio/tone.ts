@@ -28,6 +28,36 @@ export function toneGuardActive(): boolean {
   return nowMs() < guardUntil;
 }
 
+// Monophonic playback: only one reference tone may sound at a time. Stop any
+// current voice before starting a new one, so overlapping calls (rapid advance,
+// a replay tap, React StrictMode double-invoke) can't stack into two pitches.
+let voice: OscillatorNode | null = null;
+let voiceGain: GainNode | null = null;
+
+function stopVoice(at: number): void {
+  if (!voice || !voiceGain) return;
+  try {
+    voiceGain.gain.cancelScheduledValues(at);
+    voiceGain.gain.setTargetAtTime(0.0001, at, 0.01); // quick fade, no click
+    voice.stop(at + 0.06);
+  } catch {
+    // already stopped
+  }
+  voice = null;
+  voiceGain = null;
+}
+
+function setVoice(osc: OscillatorNode, gain: GainNode): void {
+  voice = osc;
+  voiceGain = gain;
+  osc.onended = () => {
+    if (voice === osc) {
+      voice = null;
+      voiceGain = null;
+    }
+  };
+}
+
 /** Play a short, gently-enveloped sine at `hz` for `durationMs`. */
 export function playTone(hz: number, durationMs = 1000): void {
   const audio = getCtx();
@@ -36,6 +66,8 @@ export function playTone(hz: number, durationMs = 1000): void {
 
   const now = audio.currentTime;
   const end = now + durationMs / 1000;
+
+  stopVoice(now); // ensure only one tone sounds at a time
 
   const osc = audio.createOscillator();
   const gain = audio.createGain();
@@ -51,6 +83,7 @@ export function playTone(hz: number, durationMs = 1000): void {
   osc.connect(gain).connect(audio.destination);
   osc.start(now);
   osc.stop(end + 0.02);
+  setVoice(osc, gain);
 }
 
 /** Play a smooth pitch glide from one frequency to another (for siren drills). */
@@ -60,6 +93,8 @@ export function playGlide(fromHz: number, toHz: number, durationMs = 2400): void
 
   const now = audio.currentTime;
   const end = now + durationMs / 1000;
+
+  stopVoice(now);
 
   const osc = audio.createOscillator();
   const gain = audio.createGain();
@@ -75,4 +110,5 @@ export function playGlide(fromHz: number, toHz: number, durationMs = 2400): void
   osc.connect(gain).connect(audio.destination);
   osc.start(now);
   osc.stop(end + 0.02);
+  setVoice(osc, gain);
 }
