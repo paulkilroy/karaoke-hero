@@ -69,6 +69,16 @@ export function SingTurn({
               : "sing the note"}
         </span>
       </div>
+
+      <div className="controls">
+        <button
+          className="btn"
+          onClick={turn.replayTone}
+          disabled={turn.target == null}
+        >
+          🔁 Replay note
+        </button>
+      </div>
     </div>
   );
 }

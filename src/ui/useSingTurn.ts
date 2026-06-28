@@ -55,6 +55,11 @@ export function useSingTurn(
     onCleared: handleCleared,
   });
 
+  /** Re-play the current target note for a singer who needs a reminder. */
+  const replayTone = useCallback(() => {
+    if (target != null) playTone(midiToHz(target), 900);
+  }, [target]);
+
   // clean up a pending pause on unmount
   useEffect(() => {
     return () => {
@@ -74,5 +79,6 @@ export function useSingTurn(
     done,
     error,
     listening,
+    replayTone,
   };
 }
