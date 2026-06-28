@@ -134,6 +134,173 @@ body {
   line-height: 1.4;
 }
 
+.modes--grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.modes--grid .mode-card {
+  min-width: 0;
+  max-width: none;
+  padding: 18px 14px;
+}
+
+/* ---- lists / steps ---- */
+.steps {
+  text-align: left;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 8px auto;
+  max-width: 360px;
+  font-size: 0.9rem;
+}
+
+/* ---- range result ---- */
+.range-big {
+  font-size: 2.6rem;
+  font-weight: 800;
+  margin: 8px 0 4px;
+}
+.range-sub {
+  color: var(--muted);
+}
+.range-voice {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ---- progress screen ---- */
+.progress {
+  width: 100%;
+}
+.progress__h {
+  text-align: center;
+  margin-top: 0;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.panel__title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.panel__sub {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+.level-panel {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.ring {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+.ring__top {
+  fill: var(--text);
+  font-size: 26px;
+  font-weight: 800;
+}
+.ring__bottom {
+  fill: var(--muted);
+  font-size: 14px;
+}
+.level-info {
+  flex: 1;
+  min-width: 0;
+}
+.level-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.level-blurb {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.level-grade {
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+.level-next {
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+.gate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.gate--ok {
+  color: #22c55e;
+}
+.gate__icon {
+  width: 16px;
+}
+.gate__label {
+  flex: 1;
+}
+.gate__vals {
+  font-variant-numeric: tabular-nums;
+}
+.radar {
+  width: 200px;
+  height: 200px;
+  display: block;
+  margin: 0 auto;
+}
+.radar__label {
+  fill: var(--muted);
+  font-size: 10px;
+}
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.chart__tag {
+  font-size: 11px;
+  font-weight: 700;
+}
+.legend {
+  color: var(--muted);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 6px;
+}
+.legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 8px;
+}
+.legend__dot--high {
+  background: #f59e0b;
+}
+.legend__dot--low {
+  background: #38bdf8;
+}
+.statline {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 8px 0;
+}
+
 /* ---- versus setup ---- */
 .name-row {
   display: flex;

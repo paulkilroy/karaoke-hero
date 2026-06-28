@@ -76,12 +76,21 @@ like Tongits' `online/` layer drives its game engine.
 Vite · React 18 · TypeScript (strict) · Vitest · [`pitchy`](https://github.com/ianprime0509/pitchy)
 for in-browser pitch detection. All client-side — audio never leaves the device.
 
+## Proficiency ladder
+
+No universal "CEFR for singing" exists; graded music exams (ABRSM/Trinity/RCM)
+are the real-world analog. `engine/level.ts` defines a CEFR-style 6-band ladder
+(A1 *Finding Your Voice* → C2 *Virtuoso*) with objective gates (range span +
+pitch accuracy) loosely mapped to those grades. The Progress screen shows your
+band, a ring of progress to the next, a skill radar, and range/accuracy trends.
+
 ## Roadmap
 
-1. **Pitch Match warm-up + local & online Sing-Off** ← *you are here*
-2. **Song mode (MIDI)** — scrolling note highway, sing-along scoring, stars &
+1. **Pitch Match + local & online Sing-Off** ✅
+2. **Range test + extension drills + progress charts + proficiency level** ✅
+   ← *you are here*
+3. **Song mode (MIDI)** — scrolling note highway, sing-along scoring, stars &
    streaks. MIDI gives melody + harmony + backing without audio analysis.
-3. **Range test + stability drills + progress charts** (the gamification spine)
 4. **Harmony mode** — sing a harmony line against the melody (MIDI multi-track)
 5. **Import your own MP3** — offline preprocess (Demucs source-separation →
    `basic-pitch` melody extraction → `.lrc` lyrics) feeding song mode.

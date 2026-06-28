@@ -7,6 +7,7 @@ import { instantAccuracy, streakMultiplier } from "../engine/scoring";
 import { DEFAULT_RANGE, pitchMatchSequence } from "../engine/exercises";
 import { midiToHz } from "../engine/music";
 import { playTone } from "../audio/tone";
+import { getStoredRange, recordSession } from "../store/progress";
 import { CLEAR_PAUSE_MS, useNoteTracker } from "./useNoteTracker";
 
 export function usePitchMatch(active: boolean) {
@@ -21,10 +22,13 @@ export function usePitchMatch(active: boolean) {
 
   const queue = useRef<number[]>([]);
   const pauseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sessionScores = useRef<number[]>([]);
+  // Tailor targets to the singer's measured range (falls back to default).
+  const range = useRef(getStoredRange() ?? DEFAULT_RANGE);
 
   const nextTarget = useCallback(() => {
     if (queue.current.length === 0) {
-      queue.current = pitchMatchSequence(12, DEFAULT_RANGE);
+      queue.current = pitchMatchSequence(12, range.current);
     }
     const next = queue.current.shift()!;
     setTarget(next);
@@ -33,6 +37,7 @@ export function usePitchMatch(active: boolean) {
 
   const handleCleared = useCallback(
     (score: number) => {
+      sessionScores.current.push(score);
       setStreak((s) => {
         const ns = s + 1;
         setXp((x) => x + Math.round(score * streakMultiplier(s)));
@@ -61,7 +66,9 @@ export function usePitchMatch(active: boolean) {
   // (re)start the drill whenever it becomes active
   useEffect(() => {
     if (!active) return;
-    queue.current = pitchMatchSequence(12, DEFAULT_RANGE);
+    range.current = getStoredRange() ?? DEFAULT_RANGE;
+    queue.current = pitchMatchSequence(12, range.current);
+    sessionScores.current = [];
     setStreak(0);
     setXp(0);
     setCleared(0);
@@ -70,6 +77,12 @@ export function usePitchMatch(active: boolean) {
     nextTarget();
     return () => {
       if (pauseTimer.current) clearTimeout(pauseTimer.current);
+      // record the session on stop/unmount so it feeds Progress
+      const s = sessionScores.current;
+      if (s.length) {
+        const avg = Math.round(s.reduce((a, b) => a + b, 0) / s.length);
+        recordSession("practice", avg, s.length, Date.now());
+      }
     };
   }, [active, nextTarget]);
 
