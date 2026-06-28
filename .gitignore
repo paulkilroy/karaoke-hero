@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.local
+.vercel
+*.tsbuildinfo
+
+# Secrets — never commit
+.secrets
+*.secret
+.secrets/

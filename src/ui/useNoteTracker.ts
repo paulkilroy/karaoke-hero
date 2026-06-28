@@ -1,0 +1,96 @@
+// Shared per-note tracking loop used by both the solo drill and versus turns.
+// Listens to the live pitch, measures deviation from a single target note,
+// requires a sustained in-tune hold, and fires `onCleared(score)` exactly once.
+
+import { useEffect, useRef, useState } from "react";
+import { centsFromTarget } from "../engine/music";
+import { isOnTarget, scoreHold } from "../engine/scoring";
+import { usePitch } from "./usePitch";
+
+/** Time (ms) the singer must stay on the note to clear it. */
+export const HOLD_TARGET_MS = 1100;
+
+/** Celebration beat (ms) callers should pause after a clear before advancing. */
+export const CLEAR_PAUSE_MS = 900;
+
+export interface NoteTrackerArgs {
+  /** Target MIDI note, or null when there's nothing to sing. */
+  target: number | null;
+  /** Whether the mic should be live. */
+  active: boolean;
+  /** When true, freeze processing (e.g. during a celebration beat). */
+  frozen: boolean;
+  onCleared: (score: number) => void;
+}
+
+export interface NoteTrackerState {
+  cents: number | null;
+  holdProgress: number;
+  error: string | null;
+  listening: boolean;
+}
+
+export function useNoteTracker({
+  target,
+  active,
+  frozen,
+  onCleared,
+}: NoteTrackerArgs): NoteTrackerState {
+  const { pitch, error, listening } = usePitch(active, { clarityThreshold: 0.9 });
+
+  const [cents, setCents] = useState<number | null>(null);
+  const [holdProgress, setHoldProgress] = useState(0);
+
+  const holdMs = useRef(0);
+  const lastTs = useRef<number | null>(null);
+  const samples = useRef<number[]>([]);
+  const clearedRef = useRef(false);
+  const onClearedRef = useRef(onCleared);
+  onClearedRef.current = onCleared;
+
+  // reset accumulators whenever the target changes
+  useEffect(() => {
+    holdMs.current = 0;
+    samples.current = [];
+    lastTs.current = null;
+    clearedRef.current = false;
+    setHoldProgress(0);
+    setCents(null);
+  }, [target]);
+
+  // process each live-pitch update
+  useEffect(() => {
+    if (!active || frozen || target == null || clearedRef.current) return;
+
+    const now =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    const dt = lastTs.current == null ? 0 : now - lastTs.current;
+    lastTs.current = now;
+
+    if (!pitch) {
+      setCents(null);
+      holdMs.current = Math.max(0, holdMs.current - dt);
+      setHoldProgress(holdMs.current / HOLD_TARGET_MS);
+      return;
+    }
+
+    const c = centsFromTarget(pitch.hz, target);
+    setCents(c);
+
+    if (isOnTarget(pitch.hz, target)) {
+      holdMs.current += dt;
+      samples.current.push(c);
+    } else {
+      holdMs.current = Math.max(0, holdMs.current - dt * 0.7);
+    }
+    setHoldProgress(Math.min(1, holdMs.current / HOLD_TARGET_MS));
+
+    if (holdMs.current >= HOLD_TARGET_MS) {
+      clearedRef.current = true;
+      setHoldProgress(1);
+      onClearedRef.current(scoreHold(samples.current));
+    }
+  }, [pitch, active, frozen, target]);
+
+  return { cents, holdProgress, error, listening };
+}
