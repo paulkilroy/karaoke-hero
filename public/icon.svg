@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#4c1d95"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round">
+    <!-- mic capsule -->
+    <rect x="196" y="92" width="120" height="210" rx="60" fill="#ffffff" stroke="none"/>
+    <!-- grille lines -->
+    <line x1="220" y1="150" x2="292" y2="150" stroke="#7c3aed" stroke-width="14"/>
+    <line x1="220" y1="190" x2="292" y2="190" stroke="#7c3aed" stroke-width="14"/>
+    <line x1="220" y1="230" x2="292" y2="230" stroke="#7c3aed" stroke-width="14"/>
+    <!-- cradle / yoke -->
+    <path d="M148 250 a108 108 0 0 0 216 0"/>
+    <!-- stem -->
+    <line x1="256" y1="358" x2="256" y2="416"/>
+    <!-- base -->
+    <line x1="200" y1="424" x2="312" y2="424"/>
+  </g>
+</svg>

@@ -15,7 +15,8 @@
       "Bash(node verify.mjs)",
       "Bash(gh auth *)",
       "Bash(git remote *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(node rasterize.mjs)"
     ]
   }
 }
