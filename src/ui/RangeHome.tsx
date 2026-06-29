@@ -16,6 +16,7 @@ import { ExtensionDrill } from "./RangeDrills";
 import { SirenDrill } from "./SirenDrill";
 import { SovtWarmup } from "./SovtWarmup";
 import { GoldenSpot } from "./GoldenSpot";
+import { GoldenSpotTrainer } from "./GoldenSpotTrainer";
 
 type Screen =
   | "menu"
@@ -25,7 +26,8 @@ type Screen =
   | "edge-low"
   | "siren"
   | "sovt"
-  | "golden";
+  | "golden"
+  | "golden-train";
 
 export function RangeHome({ onExit }: { onExit: () => void }) {
   const [screen, setScreen] = useState<Screen>("menu");
@@ -37,6 +39,7 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
   if (screen === "siren") return <SirenDrill range={range} onExit={back} />;
   if (screen === "sovt") return <SovtWarmup onExit={back} />;
   if (screen === "golden") return <GoldenSpot onExit={back} />;
+  if (screen === "golden-train") return <GoldenSpotTrainer onExit={back} />;
   if (screen === "creep") {
     const steps = Math.max(5, Math.min(10, spanSemitones(range) - 7));
     return (
@@ -96,9 +99,15 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
         />
         <DrillCard
           icon="✨"
-          title="Golden Spot"
-          desc="Find your passaggio sweet spot — loud for little effort."
+          title="Find Golden Spot"
+          desc="Locate your passaggio sweet spot — loud for little effort."
           onClick={() => setScreen("golden")}
+        />
+        <DrillCard
+          icon="😺"
+          title="Golden Spot Drills"
+          desc="Sweep below↔above the spot, on Ah and crying Mew."
+          onClick={() => setScreen("golden-train")}
         />
         <DrillCard
           icon="🌊"

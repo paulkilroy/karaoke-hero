@@ -156,6 +156,20 @@ body {
 }
 
 /* ---- golden spot ---- */
+.span-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+.span-row__label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
 .resonance {
   width: 100%;
   max-width: 320px;
