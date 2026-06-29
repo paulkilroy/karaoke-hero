@@ -15,6 +15,7 @@ import { RangeTest } from "./RangeTest";
 import { ExtensionDrill } from "./RangeDrills";
 import { SirenDrill } from "./SirenDrill";
 import { SovtWarmup } from "./SovtWarmup";
+import { GoldenSpot } from "./GoldenSpot";
 
 type Screen =
   | "menu"
@@ -23,7 +24,8 @@ type Screen =
   | "edge-high"
   | "edge-low"
   | "siren"
-  | "sovt";
+  | "sovt"
+  | "golden";
 
 export function RangeHome({ onExit }: { onExit: () => void }) {
   const [screen, setScreen] = useState<Screen>("menu");
@@ -34,6 +36,7 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
   if (screen === "test") return <RangeTest onExit={back} />;
   if (screen === "siren") return <SirenDrill range={range} onExit={back} />;
   if (screen === "sovt") return <SovtWarmup onExit={back} />;
+  if (screen === "golden") return <GoldenSpot onExit={back} />;
   if (screen === "creep") {
     const steps = Math.max(5, Math.min(10, spanSemitones(range) - 7));
     return (
@@ -90,6 +93,12 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
           title="SOVT Warm-up"
           desc="Lip-trills & straw phonation. Do this first."
           onClick={() => setScreen("sovt")}
+        />
+        <DrillCard
+          icon="✨"
+          title="Golden Spot"
+          desc="Find your passaggio sweet spot — loud for little effort."
+          onClick={() => setScreen("golden")}
         />
         <DrillCard
           icon="🌊"

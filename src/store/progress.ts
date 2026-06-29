@@ -21,6 +21,8 @@ export interface Progress {
   range: { low: number; high: number } | null;
   rangeHistory: RangeEntry[];
   sessions: SessionEntry[];
+  /** Saved vocal "golden spot": the flip note and the struck spot (MIDI). */
+  goldenSpot: { flip: number; spot: number } | null;
 }
 
 export interface ProgressStats {
@@ -40,7 +42,12 @@ const KEY = "karaoke-hero.progress.v1";
 // as practice volume but shouldn't inflate proficiency.
 const ACCURACY_TYPES = new Set(["practice", "creeping-scale", "edge-stretch"]);
 
-const EMPTY: Progress = { range: null, rangeHistory: [], sessions: [] };
+const EMPTY: Progress = {
+  range: null,
+  rangeHistory: [],
+  sessions: [],
+  goldenSpot: null,
+};
 
 export function loadProgress(): Progress {
   try {
@@ -51,6 +58,7 @@ export function loadProgress(): Progress {
       range: parsed.range ?? null,
       rangeHistory: parsed.rangeHistory ?? [],
       sessions: parsed.sessions ?? [],
+      goldenSpot: parsed.goldenSpot ?? null,
     };
   } catch {
     return { ...EMPTY };
@@ -95,6 +103,17 @@ export function recordSession(
 
 export function resetProgress(): void {
   save({ ...EMPTY });
+}
+
+export function recordGoldenSpot(flip: number, spot: number): Progress {
+  const p = loadProgress();
+  const next: Progress = { ...p, goldenSpot: { flip, spot } };
+  save(next);
+  return next;
+}
+
+export function getGoldenSpot(): { flip: number; spot: number } | null {
+  return loadProgress().goldenSpot;
 }
 
 /** The current personalised range, if a test has been taken. */

@@ -7,6 +7,8 @@ export interface LivePitch {
   hz: number;
   /** 0..1 confidence from the detector. */
   clarity: number;
+  /** RMS loudness of the frame (~0..1), for resonance/volume feedback. */
+  level: number;
 }
 
 export interface MicOptions {
@@ -59,7 +61,10 @@ export async function startMic(
     analyser.getFloatTimeDomainData(buffer);
     const [hz, clarity] = detector.findPitch(buffer, ctx.sampleRate);
     if (clarity >= clarityThreshold && hz >= minHz && hz <= maxHz) {
-      onPitch({ hz, clarity });
+      let sum = 0;
+      for (let i = 0; i < buffer.length; i++) sum += buffer[i] * buffer[i];
+      const level = Math.sqrt(sum / buffer.length);
+      onPitch({ hz, clarity, level });
     } else {
       onPitch(null);
     }

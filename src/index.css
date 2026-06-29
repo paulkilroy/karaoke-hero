@@ -155,6 +155,40 @@ body {
   font-size: 0.9rem;
 }
 
+/* ---- golden spot ---- */
+.resonance {
+  width: 100%;
+  max-width: 320px;
+}
+.resonance__label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.resonance__track {
+  height: 22px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 11px;
+  overflow: hidden;
+}
+.resonance__bar {
+  height: 100%;
+  transition: width 0.07s linear, background 0.2s ease;
+}
+.golden-hint {
+  min-height: 1.4em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.golden-hint--on {
+  color: #f59e0b;
+  text-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+  font-size: 1.1rem;
+}
+
 /* ---- song highway ---- */
 .song {
   width: 100%;

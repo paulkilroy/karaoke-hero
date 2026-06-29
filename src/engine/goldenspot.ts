@@ -1,0 +1,28 @@
+// "Golden spot" (vocal sweet spot, per Chris Liepe) helpers. The spot lives in
+// the passaggio: from the note where the voice wants to flip, the zone is the 3
+// notes below, the flip, and the 3 above (7 notes), centred on the flip.
+
+import { midiToNoteName } from "./music";
+
+export interface GoldenZone {
+  /** The note where the voice flips into head voice. */
+  flip: number;
+  /** The 7-note transitional zone (flip-3 .. flip+3). */
+  notes: number[];
+  /** The middle of the zone — where you strike the spot. */
+  middle: number;
+}
+
+export function zoneFromFlip(flip: number): GoldenZone {
+  const notes = [-3, -2, -1, 0, 1, 2, 3].map((d) => flip + d);
+  return { flip, notes, middle: flip };
+}
+
+export function zoneNoteNames(zone: GoldenZone): string[] {
+  return zone.notes.map(midiToNoteName);
+}
+
+/** Normalise raw RMS loudness to a 0..1 meter value for display. */
+export function levelMeter(rms: number): number {
+  return Math.max(0, Math.min(1, rms * 4));
+}
