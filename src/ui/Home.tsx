@@ -1,82 +1,75 @@
-// Home: streak hero + mode picker.
+// Home: a daily practice journey — see progress → warm up → drill → sing.
 
 import { type CSSProperties } from "react";
 import { type StreakInfo } from "../engine/streak";
 import { StreakCard } from "./StreakCard";
+import { LevelCard } from "./LevelCard";
 
-export type Mode = "practice" | "songs" | "range" | "progress" | "versus";
-
-interface Tile {
-  mode: Mode;
-  icon: string;
-  title: string;
-  desc: string;
-  tint: string;
-}
-
-const TILES: Tile[] = [
-  {
-    mode: "songs",
-    icon: "🎵",
-    title: "Songs",
-    desc: "Sing along, Guitar-Hero style.",
-    tint: "#a78bfa",
-  },
-  {
-    mode: "practice",
-    icon: "🎯",
-    title: "Practice",
-    desc: "Pitch-match drill, tuned to you.",
-    tint: "#38bdf8",
-  },
-  {
-    mode: "range",
-    icon: "🎚",
-    title: "Range & Warm-ups",
-    desc: "Test & extend your range.",
-    tint: "#fbbf24",
-  },
-  {
-    mode: "progress",
-    icon: "📈",
-    title: "Progress",
-    desc: "Level, range & accuracy.",
-    tint: "#34d399",
-  },
-  {
-    mode: "versus",
-    icon: "⚔️",
-    title: "Sing-Off",
-    desc: "Battle a friend, live or online.",
-    tint: "#fb7185",
-  },
-];
+export type NavTarget = "progress" | "warmup" | "practice" | "sing";
 
 export function Home({
-  onPick,
+  onNavigate,
   streak,
 }: {
-  onPick: (mode: Mode) => void;
+  onNavigate: (target: NavTarget) => void;
   streak: StreakInfo;
 }) {
   return (
     <div className="home">
       <StreakCard streak={streak} />
-      <p className="home__lead">Pick a mode</p>
-      <div className="modes modes--grid">
-        {TILES.map((t) => (
-          <button
-            key={t.mode}
-            className="mode-card"
-            style={{ "--tint": t.tint } as CSSProperties}
-            onClick={() => onPick(t.mode)}
-          >
-            <span className="mode-card__icon">{t.icon}</span>
-            <span className="mode-card__title">{t.title}</span>
-            <span className="mode-card__desc">{t.desc}</span>
-          </button>
-        ))}
-      </div>
+
+      <LevelCard onOpen={() => onNavigate("progress")} />
+
+      <JourneyCard
+        icon="🫧"
+        tint="#38bdf8"
+        title="Warm Up"
+        desc="SOVT & sirens to ready your voice"
+        onClick={() => onNavigate("warmup")}
+      />
+      <JourneyCard
+        icon="🎯"
+        tint="#fbbf24"
+        title="Daily Drills"
+        desc="Pitch accuracy + range training"
+        onClick={() => onNavigate("practice")}
+      />
+      <JourneyCard
+        icon="🎤"
+        tint="#a78bfa"
+        title="Karaoke Hero"
+        desc="Sing songs, or a Sing-Off vs a friend"
+        onClick={() => onNavigate("sing")}
+      />
     </div>
+  );
+}
+
+function JourneyCard({
+  icon,
+  tint,
+  title,
+  desc,
+  onClick,
+}: {
+  icon: string;
+  tint: string;
+  title: string;
+  desc: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className="journey-card"
+      style={{ "--tint": tint } as CSSProperties}
+      onClick={onClick}
+    >
+      <span className="journey-card__icon">{icon}</span>
+      <span className="journey-card__body">
+        <span className="journey-card__title">{title}</span>
+        <span className="journey-card__desc">{desc}</span>
+      </span>
+      <span className="journey-card__chev">›</span>
+    </button>
   );
 }

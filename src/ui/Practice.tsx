@@ -1,8 +1,6 @@
-// The Range & Warm-ups section: range test + the extension drills, tailored to
-// the singer's measured range (falls back to the default until they test).
+// Daily Drills bucket — pitch accuracy + range training + passaggio work.
 
 import { useState } from "react";
-import { midiToNoteName } from "../engine/music";
 import { DEFAULT_RANGE } from "../engine/exercises";
 import {
   creepingScale,
@@ -11,33 +9,30 @@ import {
   type VocalRange,
 } from "../engine/range";
 import { getStoredRange } from "../store/progress";
+import { PitchMatchGame } from "./PitchMatchGame";
 import { RangeTest } from "./RangeTest";
 import { ExtensionDrill } from "./RangeDrills";
-import { SirenDrill } from "./SirenDrill";
-import { SovtWarmup } from "./SovtWarmup";
 import { GoldenSpot } from "./GoldenSpot";
 import { GoldenSpotTrainer } from "./GoldenSpotTrainer";
+import { DrillCard } from "./DrillCard";
 
 type Screen =
   | "menu"
+  | "pitch"
   | "test"
   | "creep"
   | "edge-high"
   | "edge-low"
-  | "siren"
-  | "sovt"
   | "golden"
   | "golden-train";
 
-export function RangeHome({ onExit }: { onExit: () => void }) {
+export function Practice({ onExit }: { onExit: () => void }) {
   const [screen, setScreen] = useState<Screen>("menu");
   const range: VocalRange = getStoredRange() ?? DEFAULT_RANGE;
-
   const back = () => setScreen("menu");
 
+  if (screen === "pitch") return <PitchMatchGame onExit={back} />;
   if (screen === "test") return <RangeTest onExit={back} />;
-  if (screen === "siren") return <SirenDrill range={range} onExit={back} />;
-  if (screen === "sovt") return <SovtWarmup onExit={back} />;
   if (screen === "golden") return <GoldenSpot onExit={back} />;
   if (screen === "golden-train") return <GoldenSpotTrainer onExit={back} />;
   if (screen === "creep") {
@@ -55,9 +50,9 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
   if (screen === "edge-high") {
     return (
       <ExtensionDrill
-        title="⬆ Edge stretch (top)"
+        title="⬆ Stretch top"
         type="edge-stretch"
-        color="#f59e0b"
+        color="#fbbf24"
         sequence={edgeStretch(range, "high", 3)}
         onExit={back}
       />
@@ -66,72 +61,68 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
   if (screen === "edge-low") {
     return (
       <ExtensionDrill
-        title="⬇ Edge stretch (bottom)"
+        title="⬇ Stretch bottom"
         type="edge-stretch"
-        color="#f59e0b"
+        color="#fbbf24"
         sequence={edgeStretch(range, "low", 3)}
         onExit={back}
       />
     );
   }
 
-  const stored = getStoredRange();
   return (
     <div className="home">
-      <p className="home__lead">Range &amp; Warm-ups</p>
-      <p className="hint">
-        {stored
-          ? `Your range: ${midiToNoteName(stored.low)}–${midiToNoteName(stored.high)}`
-          : "No range test yet — drills use a default range until you test."}
-      </p>
+      <p className="home__lead">Daily Drills</p>
+      <p className="hint">Build pitch accuracy and extend your range.</p>
       <div className="modes modes--grid">
         <DrillCard
+          icon="🎯"
+          tint="#38bdf8"
+          title="Pitch Match"
+          desc="Hit & hold notes in tune. Core accuracy."
+          onClick={() => setScreen("pitch")}
+        />
+        <DrillCard
           icon="🎚"
+          tint="#a78bfa"
           title="Range Test"
-          desc="Measure your low & high. Sets your personal range."
+          desc="Measure your low & high; sets your range."
           onClick={() => setScreen("test")}
         />
         <DrillCard
-          icon="🫧"
-          title="SOVT Warm-up"
-          desc="Lip-trills & straw phonation. Do this first."
-          onClick={() => setScreen("sovt")}
-        />
-        <DrillCard
-          icon="✨"
-          title="Find Golden Spot"
-          desc="Locate your passaggio sweet spot — loud for little effort."
-          onClick={() => setScreen("golden")}
-        />
-        <DrillCard
-          icon="😺"
-          title="Golden Spot Drills"
-          desc="Sweep below↔above the spot, on Ah and crying Mew."
-          onClick={() => setScreen("golden-train")}
-        />
-        <DrillCard
-          icon="🌊"
-          title="Siren Glides"
-          desc="Smooth slides through your range — the safe extender."
-          onClick={() => setScreen("siren")}
-        />
-        <DrillCard
           icon="🪜"
+          tint="#8b5cf6"
           title="Creeping Scale"
-          desc="Laddering scales that nudge your range outward."
+          desc="Laddering scales that nudge your range."
           onClick={() => setScreen("creep")}
         />
         <DrillCard
           icon="⬆"
+          tint="#fbbf24"
           title="Stretch Top"
           desc="Gently push your ceiling, note by note."
           onClick={() => setScreen("edge-high")}
         />
         <DrillCard
           icon="⬇"
+          tint="#f59e0b"
           title="Stretch Bottom"
           desc="Gently push your floor, note by note."
           onClick={() => setScreen("edge-low")}
+        />
+        <DrillCard
+          icon="✨"
+          tint="#f472b6"
+          title="Find Golden Spot"
+          desc="Locate your passaggio sweet spot."
+          onClick={() => setScreen("golden")}
+        />
+        <DrillCard
+          icon="😺"
+          tint="#fb7185"
+          title="Golden Spot Drills"
+          desc="Sweep the spot on Ah & crying Mew."
+          onClick={() => setScreen("golden-train")}
         />
       </div>
       <div className="controls">
@@ -140,25 +131,5 @@ export function RangeHome({ onExit }: { onExit: () => void }) {
         </button>
       </div>
     </div>
-  );
-}
-
-function DrillCard({
-  icon,
-  title,
-  desc,
-  onClick,
-}: {
-  icon: string;
-  title: string;
-  desc: string;
-  onClick: () => void;
-}) {
-  return (
-    <button className="mode-card" onClick={onClick}>
-      <div className="mode-card__icon">{icon}</div>
-      <div className="mode-card__title">{title}</div>
-      <div className="mode-card__desc">{desc}</div>
-    </button>
   );
 }

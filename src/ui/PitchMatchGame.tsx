@@ -6,7 +6,7 @@ import { streakMultiplier } from "../engine/scoring";
 import { usePitchMatch } from "./usePitchMatch";
 import { PitchMeter } from "./PitchMeter";
 
-export function PitchMatchGame() {
+export function PitchMatchGame({ onExit }: { onExit?: () => void }) {
   const [active, setActive] = useState(false);
   const game = usePitchMatch(active);
 
@@ -18,9 +18,16 @@ export function PitchMatchGame() {
           I’ll play a note — sing it back and hold it steady until the ring
           fills. Stay in tune to build a streak.
         </p>
-        <button className="btn btn--primary" onClick={() => setActive(true)}>
-          🎤 Start
-        </button>
+        <div className="controls">
+          <button className="btn btn--primary" onClick={() => setActive(true)}>
+            🎤 Start
+          </button>
+          {onExit && (
+            <button className="btn" onClick={onExit}>
+              Back
+            </button>
+          )}
+        </div>
         <p className="hint">You’ll be asked to allow microphone access.</p>
       </div>
     );

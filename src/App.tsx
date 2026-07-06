@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { Home, type Mode } from "./ui/Home";
-import { PitchMatchGame } from "./ui/PitchMatchGame";
-import { SongMode } from "./ui/SongMode";
-import { RangeHome } from "./ui/RangeHome";
+import { Home, type NavTarget } from "./ui/Home";
+import { WarmUp } from "./ui/WarmUp";
+import { Practice } from "./ui/Practice";
+import { Sing } from "./ui/Sing";
 import { ProgressScreen } from "./ui/ProgressScreen";
-import { VersusGame } from "./ui/VersusGame";
 import { activityTimestamps, loadProgress } from "./store/progress";
 import { computeStreak } from "./engine/streak";
 
-type Screen = "home" | Mode;
+type Screen = "home" | NavTarget;
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -39,14 +38,13 @@ export default function App() {
       </header>
 
       <main className="app__main">
-        {screen === "home" && <Home onPick={setScreen} streak={streak} />}
-        {screen === "practice" && <PitchMatchGame />}
-        {screen === "songs" && <SongMode onExit={() => setScreen("home")} />}
-        {screen === "range" && <RangeHome onExit={() => setScreen("home")} />}
+        {screen === "home" && <Home onNavigate={setScreen} streak={streak} />}
+        {screen === "warmup" && <WarmUp onExit={() => setScreen("home")} />}
+        {screen === "practice" && <Practice onExit={() => setScreen("home")} />}
+        {screen === "sing" && <Sing onExit={() => setScreen("home")} />}
         {screen === "progress" && (
           <ProgressScreen onExit={() => setScreen("home")} />
         )}
-        {screen === "versus" && <VersusGame onExit={() => setScreen("home")} />}
       </main>
     </div>
   );
