@@ -17,15 +17,29 @@ import {
   RangeBandChart,
   AccuracyChart,
 } from "./charts";
+import { RangeTest } from "./RangeTest";
 
 export function ProgressScreen({ onExit }: { onExit: () => void }) {
   const [progress, setProgress] = useState(() => loadProgress());
+  const [testing, setTesting] = useState(false);
   const stats: ProgressStats = summarize(progress);
 
   const lp = levelProgress({
     rangeSemitones: stats.rangeSemitones,
     accuracy: stats.bestAccuracy,
   });
+
+  // Range Test lives under Progress (it's an assessment, not a daily drill).
+  if (testing) {
+    return (
+      <RangeTest
+        onExit={() => {
+          setProgress(loadProgress());
+          setTesting(false);
+        }}
+      />
+    );
+  }
 
   const hasData = stats.totalSessions > 0 || stats.range != null;
 
@@ -35,12 +49,17 @@ export function ProgressScreen({ onExit }: { onExit: () => void }) {
         <h2>📈 Your Progress</h2>
         <p>
           Nothing tracked yet. Take a <strong>Range Test</strong> and do a few{" "}
-          <strong>Practice</strong> rounds — your level, range growth and
-          accuracy will chart here.
+          <strong>Daily Drills</strong> — your level, range growth and accuracy
+          will chart here.
         </p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
+        <div className="controls">
+          <button className="btn btn--primary" onClick={() => setTesting(true)}>
+            🎚 Take Range Test
+          </button>
+          <button className="btn" onClick={onExit}>
+            Back
+          </button>
+        </div>
       </div>
     );
   }
@@ -66,6 +85,12 @@ export function ProgressScreen({ onExit }: { onExit: () => void }) {
   return (
     <div className="progress">
       <h2 className="progress__h">📈 Your Progress</h2>
+
+      <div className="controls">
+        <button className="btn btn--primary" onClick={() => setTesting(true)}>
+          🎚 {stats.range ? "Re-test range" : "Take range test"}
+        </button>
+      </div>
 
       {/* Level */}
       <div className="panel level-panel">

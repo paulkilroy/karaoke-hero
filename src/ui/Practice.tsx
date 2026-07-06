@@ -10,7 +10,6 @@ import {
 } from "../engine/range";
 import { getStoredRange } from "../store/progress";
 import { PitchMatchGame } from "./PitchMatchGame";
-import { RangeTest } from "./RangeTest";
 import { ExtensionDrill } from "./RangeDrills";
 import { GoldenSpot } from "./GoldenSpot";
 import { GoldenSpotTrainer } from "./GoldenSpotTrainer";
@@ -19,7 +18,6 @@ import { DrillCard } from "./DrillCard";
 type Screen =
   | "menu"
   | "pitch"
-  | "test"
   | "creep"
   | "edge-high"
   | "edge-low"
@@ -32,7 +30,6 @@ export function Practice({ onExit }: { onExit: () => void }) {
   const back = () => setScreen("menu");
 
   if (screen === "pitch") return <PitchMatchGame onExit={back} />;
-  if (screen === "test") return <RangeTest onExit={back} />;
   if (screen === "golden") return <GoldenSpot onExit={back} />;
   if (screen === "golden-train") return <GoldenSpotTrainer onExit={back} />;
   if (screen === "creep") {
@@ -81,13 +78,6 @@ export function Practice({ onExit }: { onExit: () => void }) {
           title="Pitch Match"
           desc="Hit & hold notes in tune. Core accuracy."
           onClick={() => setScreen("pitch")}
-        />
-        <DrillCard
-          icon="🎚"
-          tint="#a78bfa"
-          title="Range Test"
-          desc="Measure your low & high; sets your range."
-          onClick={() => setScreen("test")}
         />
         <DrillCard
           icon="🪜"
