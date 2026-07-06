@@ -5,37 +5,41 @@ import { SongMode } from "./ui/SongMode";
 import { RangeHome } from "./ui/RangeHome";
 import { ProgressScreen } from "./ui/ProgressScreen";
 import { VersusGame } from "./ui/VersusGame";
+import { activityTimestamps, loadProgress } from "./store/progress";
+import { computeStreak } from "./engine/streak";
 
 type Screen = "home" | Mode;
-
-const TAGS: Record<Screen, string> = {
-  home: "Karaoke Hero",
-  practice: "Practice",
-  songs: "Songs",
-  range: "Range & Warm-ups",
-  progress: "Progress",
-  versus: "Sing-Off",
-};
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
 
+  // recomputed on every navigation, so returning home reflects new sessions
+  const streak = computeStreak(activityTimestamps(loadProgress()), Date.now());
+
   return (
     <div className="app">
       <header className="app__header">
-        <h1
-          className="app__title"
+        <div
+          className="brand"
           onClick={() => setScreen("home")}
           role="button"
           tabIndex={0}
         >
-          🎤 Karaoke Hero
-        </h1>
-        <span className="app__tag">{TAGS[screen]}</span>
+          <span className="brand__logo">🎤</span>
+          <span className="brand__name">Karaoke Hero</span>
+        </div>
+        <button
+          className={`streak-chip${streak.current === 0 ? " streak-chip--cold" : ""}`}
+          onClick={() => setScreen("progress")}
+          title="Your streak & progress"
+        >
+          <span>{streak.current > 0 ? "🔥" : "✨"}</span>
+          {streak.current}
+        </button>
       </header>
 
       <main className="app__main">
-        {screen === "home" && <Home onPick={setScreen} />}
+        {screen === "home" && <Home onPick={setScreen} streak={streak} />}
         {screen === "practice" && <PitchMatchGame />}
         {screen === "songs" && <SongMode onExit={() => setScreen("home")} />}
         {screen === "range" && <RangeHome onExit={() => setScreen("home")} />}
@@ -44,11 +48,6 @@ export default function App() {
         )}
         {screen === "versus" && <VersusGame onExit={() => setScreen("home")} />}
       </main>
-
-      <footer className="app__footer">
-        Sing better, song by song. · Roadmap: warm-ups → song mode (MIDI) →
-        harmony → import your own tracks
-      </footer>
     </div>
   );
 }

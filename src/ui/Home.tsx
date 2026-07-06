@@ -1,47 +1,81 @@
-// Mode picker.
+// Home: streak hero + mode picker.
+
+import { type CSSProperties } from "react";
+import { type StreakInfo } from "../engine/streak";
+import { StreakCard } from "./StreakCard";
 
 export type Mode = "practice" | "songs" | "range" | "progress" | "versus";
 
-export function Home({ onPick }: { onPick: (mode: Mode) => void }) {
+interface Tile {
+  mode: Mode;
+  icon: string;
+  title: string;
+  desc: string;
+  tint: string;
+}
+
+const TILES: Tile[] = [
+  {
+    mode: "songs",
+    icon: "🎵",
+    title: "Songs",
+    desc: "Sing along, Guitar-Hero style.",
+    tint: "#a78bfa",
+  },
+  {
+    mode: "practice",
+    icon: "🎯",
+    title: "Practice",
+    desc: "Pitch-match drill, tuned to you.",
+    tint: "#38bdf8",
+  },
+  {
+    mode: "range",
+    icon: "🎚",
+    title: "Range & Warm-ups",
+    desc: "Test & extend your range.",
+    tint: "#fbbf24",
+  },
+  {
+    mode: "progress",
+    icon: "📈",
+    title: "Progress",
+    desc: "Level, range & accuracy.",
+    tint: "#34d399",
+  },
+  {
+    mode: "versus",
+    icon: "⚔️",
+    title: "Sing-Off",
+    desc: "Battle a friend, live or online.",
+    tint: "#fb7185",
+  },
+];
+
+export function Home({
+  onPick,
+  streak,
+}: {
+  onPick: (mode: Mode) => void;
+  streak: StreakInfo;
+}) {
   return (
     <div className="home">
+      <StreakCard streak={streak} />
       <p className="home__lead">Pick a mode</p>
       <div className="modes modes--grid">
-        <button className="mode-card" onClick={() => onPick("songs")}>
-          <div className="mode-card__icon">🎵</div>
-          <div className="mode-card__title">Songs</div>
-          <div className="mode-card__desc">
-            Sing along, Guitar-Hero style. Scored with stars.
-          </div>
-        </button>
-        <button className="mode-card" onClick={() => onPick("practice")}>
-          <div className="mode-card__icon">🎯</div>
-          <div className="mode-card__title">Practice</div>
-          <div className="mode-card__desc">
-            Solo pitch-match drill, tuned to your range.
-          </div>
-        </button>
-        <button className="mode-card" onClick={() => onPick("range")}>
-          <div className="mode-card__icon">🎚</div>
-          <div className="mode-card__title">Range &amp; Warm-ups</div>
-          <div className="mode-card__desc">
-            Test your range, then drills to extend it.
-          </div>
-        </button>
-        <button className="mode-card" onClick={() => onPick("progress")}>
-          <div className="mode-card__icon">📈</div>
-          <div className="mode-card__title">Progress</div>
-          <div className="mode-card__desc">
-            Your level, range growth &amp; accuracy over time.
-          </div>
-        </button>
-        <button className="mode-card" onClick={() => onPick("versus")}>
-          <div className="mode-card__icon">⚔️</div>
-          <div className="mode-card__title">Sing-Off</div>
-          <div className="mode-card__desc">
-            Battle a friend — same device or online.
-          </div>
-        </button>
+        {TILES.map((t) => (
+          <button
+            key={t.mode}
+            className="mode-card"
+            style={{ "--tint": t.tint } as CSSProperties}
+            onClick={() => onPick(t.mode)}
+          >
+            <span className="mode-card__icon">{t.icon}</span>
+            <span className="mode-card__title">{t.title}</span>
+            <span className="mode-card__desc">{t.desc}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

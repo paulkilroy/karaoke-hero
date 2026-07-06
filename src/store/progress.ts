@@ -121,6 +121,11 @@ export function getStoredRange(): { low: number; high: number } | null {
   return loadProgress().range;
 }
 
+/** All activity timestamps (sessions + range tests) for streak calculation. */
+export function activityTimestamps(p: Progress): number[] {
+  return [...p.sessions.map((s) => s.at), ...p.rangeHistory.map((r) => r.at)];
+}
+
 export function summarize(p: Progress): ProgressStats {
   const accuracyScores = p.sessions
     .filter((s) => ACCURACY_TYPES.has(s.type))
