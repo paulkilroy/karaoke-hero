@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LocalSingOff } from "./LocalSingOff";
 import { OnlineSingOff } from "./OnlineSingOff";
+import { ScreenTop } from "./BackButton";
 
 type Choice = "choose" | "local" | "online";
 
@@ -15,7 +16,7 @@ export function VersusGame({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="home">
-      <p className="home__lead">Sing-Off</p>
+      <ScreenTop onBack={onExit} title="Sing-Off" />
       <div className="modes">
         <button className="mode-card" onClick={() => setChoice("local")}>
           <div className="mode-card__icon">🎤</div>
@@ -30,11 +31,6 @@ export function VersusGame({ onExit }: { onExit: () => void }) {
           <div className="mode-card__desc">
             Play a friend on another device via a room code.
           </div>
-        </button>
-      </div>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
         </button>
       </div>
     </div>

@@ -17,6 +17,7 @@ import {
 import { useOnlineSingOff, type Role } from "./useOnlineSingOff";
 import { SingTurn } from "./SingTurn";
 import { ScoreCard, P1_COLOR, P2_COLOR } from "./ScoreCard";
+import { ScreenTop } from "./BackButton";
 
 const NOTE_COUNT = 6;
 
@@ -28,15 +29,13 @@ export function OnlineSingOff({ onExit }: { onExit: () => void }) {
   if (!onlineConfigured) {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Online Sing-Off" />
         <h2>🌐 Online not set up yet</h2>
         <p>
           Online sing-off needs a free Supabase project (one-time, ~5 min). See{" "}
           <strong>SETUP-ONLINE.md</strong> in the repo, add your keys to{" "}
           <code>.env.local</code>, and restart the dev server.
         </p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     );
   }
@@ -97,6 +96,7 @@ function Lobby({
 
   return (
     <div className="start">
+      <ScreenTop onBack={onExit} title="Online Sing-Off" />
       <h2>🌐 Online Sing-Off</h2>
       <p>Play a friend on another device. Same notes, highest score wins.</p>
       <input
@@ -126,11 +126,6 @@ function Lobby({
         </button>
       </div>
       {error && <p className="error">{error}</p>}
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
-      </div>
     </div>
   );
 }
@@ -155,11 +150,9 @@ function OnlineMatch({
   if (!room) {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Online Sing-Off" />
         <h2>Connecting…</h2>
         <CodeChip code={code} />
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     );
   }
@@ -174,12 +167,10 @@ function OnlineMatch({
   if (room.status === "waiting") {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Online Sing-Off" />
         <h2>Waiting for opponent…</h2>
         <p>Share this code so a friend can join:</p>
         <CodeChip code={code} />
-        <button className="btn" onClick={onExit}>
-          Cancel
-        </button>
       </div>
     );
   }
@@ -195,12 +186,14 @@ function OnlineMatch({
           name={myName}
           color={myColor}
           sequence={sequence}
+          onExit={onExit}
           onDone={(s) => void submitScores(s)}
         />
       );
     }
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Online Sing-Off" />
         <h2>✓ {totalScore(room.scores[role]!)} pts</h2>
         <p>
           Nice singing! Waiting for <strong>{oppName}</strong> to finish…
@@ -220,6 +213,7 @@ function OnlineMatch({
 
   return (
     <div className="results">
+      <ScreenTop onBack={onExit} title="Online Sing-Off" />
       <h2>🏆 {winnerName}</h2>
       <div className="scoreboard">
         <ScoreCard

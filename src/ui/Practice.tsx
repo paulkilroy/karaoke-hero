@@ -14,6 +14,7 @@ import { ExtensionDrill } from "./RangeDrills";
 import { GoldenSpot } from "./GoldenSpot";
 import { GoldenSpotTrainer } from "./GoldenSpotTrainer";
 import { DrillCard } from "./DrillCard";
+import { ScreenTop } from "./BackButton";
 
 type Screen =
   | "menu"
@@ -69,7 +70,7 @@ export function Practice({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="home">
-      <p className="home__lead">Daily Drills</p>
+      <ScreenTop onBack={onExit} title="Daily Drills" />
       <p className="hint">Build pitch accuracy and extend your range.</p>
       <div className="modes modes--grid">
         <DrillCard
@@ -114,11 +115,6 @@ export function Practice({ onExit }: { onExit: () => void }) {
           desc="Sweep the spot on Ah & crying Mew."
           onClick={() => setScreen("golden-train")}
         />
-      </div>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     </div>
   );

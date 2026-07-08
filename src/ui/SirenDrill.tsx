@@ -9,6 +9,7 @@ import { playGlide } from "../audio/tone";
 import { recordSession } from "../store/progress";
 import { usePitch } from "./usePitch";
 import { PitchMeter } from "./PitchMeter";
+import { ScreenTop } from "./BackButton";
 
 const DURATION_MS = 6000; // up then down
 
@@ -81,18 +82,16 @@ export function SirenDrill({
 
   if (error) {
     return (
-      <div className="start">
-        <h2>Microphone unavailable</h2>
+      <div className="game">
+        <ScreenTop onBack={onExit} title="Siren Glide" />
         <p className="error">{error}</p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     );
   }
 
   return (
     <div className="game">
+      <ScreenTop onBack={onExit} title="Siren Glide" />
       <div
         className="turn-banner"
         style={{ borderColor: "#22c55e", color: "#22c55e" }}
@@ -135,9 +134,6 @@ export function SirenDrill({
       <div className="controls">
         <button className="btn btn--primary" disabled={running} onClick={start}>
           {running ? "Sliding…" : coverage != null ? "🔁 Again" : "▶ Start glide"}
-        </button>
-        <button className="btn" onClick={onExit} disabled={running}>
-          Back
         </button>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { midiToNoteName } from "../engine/music";
 import { streakMultiplier } from "../engine/scoring";
 import { usePitchMatch } from "./usePitchMatch";
 import { PitchMeter } from "./PitchMeter";
+import { ScreenTop } from "./BackButton";
 
 export function PitchMatchGame({ onExit }: { onExit?: () => void }) {
   const [active, setActive] = useState(false);
@@ -13,6 +14,7 @@ export function PitchMatchGame({ onExit }: { onExit?: () => void }) {
   if (!active) {
     return (
       <div className="start">
+        {onExit && <ScreenTop onBack={onExit} title="Pitch Match" />}
         <h2>Pitch Match</h2>
         <p>
           I’ll play a note — sing it back and hold it steady until the ring
@@ -22,11 +24,6 @@ export function PitchMatchGame({ onExit }: { onExit?: () => void }) {
           <button className="btn btn--primary" onClick={() => setActive(true)}>
             🎤 Start
           </button>
-          {onExit && (
-            <button className="btn" onClick={onExit}>
-              Back
-            </button>
-          )}
         </div>
         <p className="hint">You’ll be asked to allow microphone access.</p>
       </div>
@@ -35,8 +32,8 @@ export function PitchMatchGame({ onExit }: { onExit?: () => void }) {
 
   if (game.error) {
     return (
-      <div className="start">
-        <h2>Microphone unavailable</h2>
+      <div className="game">
+        {onExit && <ScreenTop onBack={onExit} title="Pitch Match" />}
         <p className="error">{game.error}</p>
         <button className="btn" onClick={() => setActive(false)}>
           Back
@@ -47,6 +44,7 @@ export function PitchMatchGame({ onExit }: { onExit?: () => void }) {
 
   return (
     <div className="game">
+      {onExit && <ScreenTop onBack={onExit} title="Pitch Match" />}
       <div className="hud">
         <Stat label="Streak" value={`${game.streak}× `} />
         <Stat label="Multiplier" value={`${streakMultiplier(game.streak)}×`} />

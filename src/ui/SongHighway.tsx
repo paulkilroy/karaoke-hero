@@ -18,6 +18,7 @@ import {
 import { playTone } from "../audio/tone";
 import { recordSession } from "../store/progress";
 import { usePitch } from "./usePitch";
+import { ScreenTop } from "./BackButton";
 
 const VIEW_MS = 4000; // time window shown across the highway
 const PLAYHEAD = 0.28; // playhead x position (fraction of width)
@@ -194,12 +195,9 @@ export function SongHighway({
 
   if (error) {
     return (
-      <div className="start">
-        <h2>Microphone unavailable</h2>
+      <div className="game">
+        <ScreenTop onBack={onExit} title={song.title} />
         <p className="error">{error}</p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     );
   }
@@ -207,6 +205,7 @@ export function SongHighway({
   if (status === "ready") {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title={song.title} />
         <h2>🎵 {song.title}</h2>
         {song.composer && <p className="hint">{song.composer}</p>}
         <p>
@@ -236,7 +235,7 @@ export function SongHighway({
   if (status === "done" && result) {
     return (
       <div className="results">
-        <h2>🎵 {song.title}</h2>
+        <ScreenTop onBack={onExit} title={song.title} />
         <div className="song-stars">
           {"★".repeat(result.stars)}
           <span className="scorecard__stars-dim">
@@ -260,6 +259,7 @@ export function SongHighway({
   // countin / playing
   return (
     <div className="song">
+      <ScreenTop onBack={onExit} title={song.title} />
       <div className="song__head">
         <span>🎵 {song.title}</span>
         {!listening && <span className="hint">starting mic…</span>}
@@ -267,11 +267,6 @@ export function SongHighway({
       <div className="song__stage">
         <canvas ref={canvasRef} className="song__canvas" />
         {status === "countin" && <div className="song__count">{count}</div>}
-      </div>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          ⏹ Stop
-        </button>
       </div>
     </div>
   );

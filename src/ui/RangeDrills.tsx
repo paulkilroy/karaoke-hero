@@ -8,6 +8,7 @@ import { totalScore } from "../engine/match";
 import { recordSession } from "../store/progress";
 import { useSingTurn } from "./useSingTurn";
 import { PitchMeter } from "./PitchMeter";
+import { ScreenTop } from "./BackButton";
 
 export function ExtensionDrill({
   title,
@@ -26,12 +27,9 @@ export function ExtensionDrill({
 
   if (sequence.length === 0) {
     return (
-      <div className="start">
-        <h2>{title}</h2>
-        <p>Take a range test first so I can tailor this to your voice.</p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
+      <div className="game">
+        <ScreenTop onBack={onExit} title={title} />
+        <p className="hint">Take a range test first so I can tailor this to your voice.</p>
       </div>
     );
   }
@@ -41,7 +39,7 @@ export function ExtensionDrill({
     const avg = done.length ? Math.round(total / done.length) : 0;
     return (
       <div className="results">
-        <h2>✓ {title}</h2>
+        <ScreenTop onBack={onExit} title={title} />
         <div className="scorecard__total">{total}</div>
         <p className="hint">
           Avg accuracy {avg} · {done.length} notes
@@ -49,9 +47,6 @@ export function ExtensionDrill({
         <div className="controls">
           <button className="btn btn--primary" onClick={() => setDone(null)}>
             🔁 Again
-          </button>
-          <button className="btn" onClick={onExit}>
-            Back
           </button>
         </div>
       </div>
@@ -63,6 +58,7 @@ export function ExtensionDrill({
       title={title}
       color={color}
       sequence={sequence}
+      onExit={onExit}
       onDone={(scores) => {
         const avg = scores.length
           ? Math.round(totalScore(scores) / scores.length)
@@ -78,17 +74,24 @@ function RunDrill({
   title,
   color,
   sequence,
+  onExit,
   onDone,
 }: {
   title: string;
   color: string;
   sequence: number[];
+  onExit: () => void;
   onDone: (scores: number[]) => void;
 }) {
   const turn = useSingTurn(sequence, onDone);
 
   if (turn.error) {
-    return <div className="error">Microphone error: {turn.error}</div>;
+    return (
+      <div className="game">
+        <ScreenTop onBack={onExit} title={title} />
+        <p className="error">Microphone error: {turn.error}</p>
+      </div>
+    );
   }
 
   const detected =
@@ -98,6 +101,7 @@ function RunDrill({
 
   return (
     <div className="game">
+      <ScreenTop onBack={onExit} title={title} />
       <div className="turn-banner" style={{ borderColor: color, color }}>
         {title}
       </div>

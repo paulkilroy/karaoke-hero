@@ -11,6 +11,7 @@ import {
 } from "../engine/match";
 import { SingTurn } from "./SingTurn";
 import { ScoreCard, P1_COLOR, P2_COLOR } from "./ScoreCard";
+import { ScreenTop } from "./BackButton";
 
 const NOTE_COUNT = 6;
 
@@ -45,6 +46,7 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
   if (phase === "setup") {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Sing-Off" />
         <h2>⚔️ Same-device Sing-Off</h2>
         <p>
           Two singers, the same {NOTE_COUNT} notes, one mic. Take turns and the
@@ -69,9 +71,6 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
           <button className="btn btn--primary" onClick={startMatch}>
             🎤 Start sing-off
           </button>
-          <button className="btn" onClick={onExit}>
-            Back
-          </button>
         </div>
       </div>
     );
@@ -83,6 +82,7 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
         name={names.a}
         color={P1_COLOR}
         sequence={sequence}
+        onExit={onExit}
         onDone={(s) => {
           setScoresA(s);
           setPhase("handoff");
@@ -94,6 +94,7 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
   if (phase === "handoff") {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Sing-Off" />
         <h2>🔁 Pass the mic</h2>
         <p>
           {names.a} scored <strong>{totalScore(scoresA)}</strong>. Hand the mic
@@ -112,6 +113,7 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
         name={names.b}
         color={P2_COLOR}
         sequence={sequence}
+        onExit={onExit}
         onDone={(s) => {
           setScoresB(s);
           setPhase("results");
@@ -131,6 +133,7 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="results">
+      <ScreenTop onBack={onExit} title="Sing-Off" />
       <h2>🏆 {winnerName}</h2>
       <div className="scoreboard">
         <ScoreCard
@@ -151,9 +154,6 @@ export function LocalSingOff({ onExit }: { onExit: () => void }) {
       <div className="controls">
         <button className="btn btn--primary" onClick={rematch}>
           ⚔️ Rematch
-        </button>
-        <button className="btn" onClick={onExit}>
-          Back
         </button>
       </div>
     </div>

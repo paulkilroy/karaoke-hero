@@ -12,12 +12,14 @@ import {
 } from "../engine/range";
 import { useRangeTest } from "./useRangeTest";
 import { PitchMeter } from "./PitchMeter";
+import { ScreenTop } from "./BackButton";
 
 export function RangeTest({ onExit }: { onExit: () => void }) {
   const [started, setStarted] = useState(false);
   if (!started) {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Range Test" />
         <h2>🎚 Range Test</h2>
         <p>
           <strong>Warm up first</strong> (hum or lip-trill for a minute) — a cold
@@ -27,12 +29,9 @@ export function RangeTest({ onExit }: { onExit: () => void }) {
         </p>
         <p className="hint">First we go down to your lowest, then up to your top.</p>
         <p className="hint">🎧 Headphones recommended — otherwise the mic hears the played note.</p>
-        <button className="btn btn--primary" onClick={() => setStarted(true)}>
-          🎤 Start test
-        </button>
         <div className="controls">
-          <button className="btn" onClick={onExit}>
-            Back
+          <button className="btn btn--primary" onClick={() => setStarted(true)}>
+            🎤 Start test
           </button>
         </div>
       </div>
@@ -46,12 +45,9 @@ function RunningTest({ onExit }: { onExit: () => void }) {
 
   if (t.error) {
     return (
-      <div className="start">
-        <h2>Microphone unavailable</h2>
+      <div className="game">
+        <ScreenTop onBack={onExit} title="Range Test" />
         <p className="error">{t.error}</p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     );
   }
@@ -74,6 +70,7 @@ function RunningTest({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="game">
+      <ScreenTop onBack={onExit} title="Range Test" />
       <div
         className="turn-banner"
         style={{ borderColor: "#8b5cf6", color: "#8b5cf6" }}
@@ -156,6 +153,7 @@ function ResultCard({
 
   return (
     <div className="results">
+      <ScreenTop onBack={onExit} title="Range Test" />
       <h2>🎉 Your range</h2>
       <div className="range-big">
         {midiToNoteName(range.low)} – {midiToNoteName(range.high)}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SongMode } from "./SongMode";
 import { VersusGame } from "./VersusGame";
 import { DrillCard } from "./DrillCard";
+import { ScreenTop } from "./BackButton";
 
 type Screen = "menu" | "songs" | "versus";
 
@@ -16,7 +17,7 @@ export function Sing({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="home">
-      <p className="home__lead">Karaoke Hero</p>
+      <ScreenTop onBack={onExit} title="Karaoke Hero" />
       <p className="hint">Put it together — sing for real.</p>
       <div className="modes modes--grid">
         <DrillCard
@@ -33,11 +34,6 @@ export function Sing({ onExit }: { onExit: () => void }) {
           desc="Battle a friend — same device or online."
           onClick={() => setScreen("versus")}
         />
-      </div>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     </div>
   );

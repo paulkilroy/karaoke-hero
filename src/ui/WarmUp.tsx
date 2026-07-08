@@ -6,6 +6,7 @@ import { getStoredRange } from "../store/progress";
 import { SovtWarmup } from "./SovtWarmup";
 import { SirenDrill } from "./SirenDrill";
 import { DrillCard } from "./DrillCard";
+import { ScreenTop } from "./BackButton";
 
 type Screen = "menu" | "sovt" | "siren";
 
@@ -19,7 +20,7 @@ export function WarmUp({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="home">
-      <p className="home__lead">Warm Up</p>
+      <ScreenTop onBack={onExit} title="Warm Up" />
       <p className="hint">Ease in — gently wake the voice before you drill or sing.</p>
       <div className="modes modes--grid">
         <DrillCard
@@ -36,11 +37,6 @@ export function WarmUp({ onExit }: { onExit: () => void }) {
           desc="Smooth slides through your whole range."
           onClick={() => setScreen("siren")}
         />
-      </div>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   centsFromTarget,
+  hzToMidi,
   midiToHz,
   midiToNoteName,
   nearestMidi,
@@ -20,6 +21,8 @@ import {
 import { playTone } from "../audio/tone";
 import { recordGoldenSpot } from "../store/progress";
 import { usePitch } from "./usePitch";
+import { PitchMeter } from "./PitchMeter";
+import { ScreenTop } from "./BackButton";
 
 type Step = "intro" | "slide" | "closure" | "strike" | "done";
 
@@ -34,6 +37,7 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
   if (error) {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Golden Spot" />
         <h2>Microphone unavailable</h2>
         <p className="error">{error}</p>
         <button className="btn" onClick={onExit}>
@@ -47,6 +51,7 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
   if (step === "intro") {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Golden Spot" />
         <h2>✨ Find Your Golden Spot</h2>
         <p>
           The vocal “sweet spot” lives in your <strong>passaggio</strong> — the
@@ -68,9 +73,10 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
 
   // ---- step 1: slide to the flip ----
   if (step === "slide") {
-    const note = pitch ? midiToNoteName(nearestMidi(pitch.hz)) : "—";
+    const liveMidi = pitch ? hzToMidi(pitch.hz) : null;
     return (
       <div className="game">
+        <ScreenTop onBack={onExit} title="Golden Spot" />
         <div className="turn-banner" style={{ borderColor: "#8b5cf6", color: "#8b5cf6" }}>
           1 · Find the flip
         </div>
@@ -79,10 +85,11 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
           When your throat tightens or the voice wants to flip into a lighter,
           hollow head voice — tap the button.
         </p>
-        <div className="versus__side">
-          <div className="versus__label">You</div>
-          <div className="versus__note">{listening ? note : "…"}</div>
-        </div>
+        <PitchMeter
+          centerMidi={liveMidi != null ? Math.round(liveMidi) : 57}
+          liveMidi={liveMidi}
+        />
+        {!listening && <div className="hint">starting mic…</div>}
         <div className="controls">
           <button
             className="btn btn--primary"
@@ -96,9 +103,6 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
           >
             ⚡ It wants to flip!
           </button>
-          <button className="btn" onClick={onExit}>
-            Back
-          </button>
         </div>
       </div>
     );
@@ -108,6 +112,7 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
   if (step === "closure" && zone) {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Golden Spot" />
         <h2>2 · Crying closure</h2>
         <p>
           Make a small, whiny “<strong>Mew</strong>” — like a puppy begging or a
@@ -148,6 +153,7 @@ export function GoldenSpot({ onExit }: { onExit: () => void }) {
   if (step === "done" && zone) {
     return (
       <div className="results">
+        <ScreenTop onBack={onExit} title="Golden Spot" />
         <h2>✨ Golden spot found</h2>
         <div className="range-big">{midiToNoteName(zone.middle)}</div>
         <div className="range-sub">in your passaggio</div>
@@ -197,6 +203,7 @@ function StrikeStep({
 
   return (
     <div className="game">
+      <ScreenTop onBack={onBack} title="Golden Spot" />
       <div className="turn-banner" style={{ borderColor: "#f59e0b", color: "#f59e0b" }}>
         3 · Strike the spot
       </div>

@@ -8,6 +8,7 @@ import { sweepSong } from "../engine/goldenspot";
 import { getGoldenSpot } from "../store/progress";
 import { SongHighway } from "./SongHighway";
 import { SirenDrill } from "./SirenDrill";
+import { ScreenTop } from "./BackButton";
 
 type Mode = "menu" | "glide" | "step-ah" | "step-mew";
 
@@ -25,14 +26,12 @@ export function GoldenSpotTrainer({ onExit }: { onExit: () => void }) {
   if (!spot) {
     return (
       <div className="start">
+        <ScreenTop onBack={onExit} title="Golden Spot Drills" />
         <h2>✨ Golden Spot Drills</h2>
         <p>
-          First find your spot: <strong>Range &amp; Warm-ups → Find Golden
-          Spot</strong>. Then come back here to drill it.
+          First find your spot in <strong>Daily Drills → Find Golden Spot</strong>.
+          Then come back here to drill it.
         </p>
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
       </div>
     );
   }
@@ -52,6 +51,7 @@ export function GoldenSpotTrainer({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="home">
+      <ScreenTop onBack={onExit} title="Golden Spot Drills" />
       <p className="home__lead">Golden Spot Drills</p>
       <p className="hint">
         Spot <strong>{midiToNoteName(center)}</strong> · sweeping{" "}
@@ -97,11 +97,6 @@ export function GoldenSpotTrainer({ onExit }: { onExit: () => void }) {
       </div>
 
       <p className="hint">🎧 Headphones recommended. Don’t push through the break.</p>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
-      </div>
     </div>
   );
 }

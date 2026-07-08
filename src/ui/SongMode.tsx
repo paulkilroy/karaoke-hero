@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SONGS } from "../engine/songs";
 import { SongHighway } from "./SongHighway";
+import { ScreenTop } from "./BackButton";
 
 export function SongMode({ onExit }: { onExit: () => void }) {
   const [songId, setSongId] = useState<string | null>(null);
@@ -12,7 +13,7 @@ export function SongMode({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="home">
-      <p className="home__lead">Songs</p>
+      <ScreenTop onBack={onExit} title="Songs" />
       <div className="modes modes--grid">
         {SONGS.map((s) => (
           <button
@@ -29,11 +30,6 @@ export function SongMode({ onExit }: { onExit: () => void }) {
       <p className="hint">
         More songs coming — and you’ll be able to import your own.
       </p>
-      <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
-      </div>
     </div>
   );
 }

@@ -4,22 +4,30 @@
 import { midiToNoteName } from "../engine/music";
 import { useSingTurn } from "./useSingTurn";
 import { PitchMeter } from "./PitchMeter";
+import { ScreenTop } from "./BackButton";
 
 export function SingTurn({
   name,
   color,
   sequence,
   onDone,
+  onExit,
 }: {
   name: string;
   color: string;
   sequence: number[];
   onDone: (scores: number[]) => void;
+  onExit?: () => void;
 }) {
   const turn = useSingTurn(sequence, onDone);
 
   if (turn.error) {
-    return <div className="error">Microphone error: {turn.error}</div>;
+    return (
+      <div className="game">
+        {onExit && <ScreenTop onBack={onExit} title="Sing-Off" />}
+        <p className="error">Microphone error: {turn.error}</p>
+      </div>
+    );
   }
 
   const detected =
@@ -29,6 +37,7 @@ export function SingTurn({
 
   return (
     <div className="game">
+      {onExit && <ScreenTop onBack={onExit} title="Sing-Off" />}
       <div className="turn-banner" style={{ borderColor: color, color }}>
         🎤 {name}’s turn
       </div>

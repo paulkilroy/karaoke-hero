@@ -18,6 +18,7 @@ import {
   AccuracyChart,
 } from "./charts";
 import { RangeTest } from "./RangeTest";
+import { ScreenTop } from "./BackButton";
 
 export function ProgressScreen({ onExit }: { onExit: () => void }) {
   const [progress, setProgress] = useState(() => loadProgress());
@@ -45,9 +46,9 @@ export function ProgressScreen({ onExit }: { onExit: () => void }) {
 
   if (!hasData) {
     return (
-      <div className="start">
-        <h2>📈 Your Progress</h2>
-        <p>
+      <div className="progress">
+        <ScreenTop onBack={onExit} title="Your Progress" />
+        <p className="hint" style={{ textAlign: "center", margin: "24px 0" }}>
           Nothing tracked yet. Take a <strong>Range Test</strong> and do a few{" "}
           <strong>Daily Drills</strong> — your level, range growth and accuracy
           will chart here.
@@ -55,9 +56,6 @@ export function ProgressScreen({ onExit }: { onExit: () => void }) {
         <div className="controls">
           <button className="btn btn--primary" onClick={() => setTesting(true)}>
             🎚 Take Range Test
-          </button>
-          <button className="btn" onClick={onExit}>
-            Back
           </button>
         </div>
       </div>
@@ -84,7 +82,7 @@ export function ProgressScreen({ onExit }: { onExit: () => void }) {
 
   return (
     <div className="progress">
-      <h2 className="progress__h">📈 Your Progress</h2>
+      <ScreenTop onBack={onExit} title="Your Progress" />
 
       <div className="controls">
         <button className="btn btn--primary" onClick={() => setTesting(true)}>
@@ -171,9 +169,6 @@ export function ProgressScreen({ onExit }: { onExit: () => void }) {
       </div>
 
       <div className="controls">
-        <button className="btn" onClick={onExit}>
-          Back
-        </button>
         <button className="btn" onClick={reset}>
           Reset progress
         </button>

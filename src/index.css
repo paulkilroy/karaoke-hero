@@ -111,6 +111,40 @@ body {
   justify-content: flex-start;
 }
 
+/* ---- standard back button + screen title bar ---- */
+.back-btn {
+  flex: 0 0 auto;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease, border-color 0.15s ease;
+}
+.back-btn:hover {
+  background: var(--panel-2);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.back-btn:active {
+  transform: translateY(1px);
+}
+.screen-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.screen-top__title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+
 /* ---- start / message screens ---- */
 .start {
   text-align: center;
@@ -421,6 +455,12 @@ body {
 .resonance__bar {
   height: 100%;
   transition: width 0.07s linear, background 0.2s ease;
+}
+.countdown {
+  font-size: 2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
 }
 .golden-hint {
   min-height: 1.4em;
